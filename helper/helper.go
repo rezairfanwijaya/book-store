@@ -60,7 +60,6 @@ func VerifyPassword(rawPassword, passwordHash string) error {
 	return nil
 }
 
-// format error
 func ErrorFormater(err error) []string {
 	var myError []string
 
