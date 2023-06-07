@@ -54,7 +54,7 @@ func EcryptPassword(password string) (string, error) {
 func VerifyPassword(rawPassword, passwordHash string) error {
 	// cocokan password input dan password dari db
 	if err := bcrypt.CompareHashAndPassword([]byte(passwordHash), []byte(rawPassword)); err != nil {
-		return fmt.Errorf("password salah")
+		return fmt.Errorf("wrong password")
 	}
 
 	return nil
