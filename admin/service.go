@@ -27,7 +27,7 @@ func (s *service) Login(input InputAdminLogin) (Admin, int, error) {
 
 	// jika email salah
 	if adminByEmail.ID == 0 {
-		return adminByEmail, http.StatusBadRequest, fmt.Errorf("email %v tidak terdaftar", input.Email)
+		return adminByEmail, http.StatusBadRequest, fmt.Errorf("email %v not found", input.Email)
 	}
 
 	// jika password salah
