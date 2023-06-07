@@ -1,6 +1,7 @@
 package database
 
 import (
+	"book-store/admin"
 	"book-store/helper"
 	"fmt"
 
@@ -32,6 +33,16 @@ func NewConnection(envPath string) (*gorm.DB, error) {
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return db, fmt.Errorf("failed connect to database : %v", err.Error())
+	}
+
+	// migrasi schema
+	if err := db.AutoMigrate(&admin.Admin{}); err != nil {
+		return db, fmt.Errorf("error migaration schema : %v", err.Error())
+	}
+
+	// migrasi admin
+	if err := AdminMigration(db); err != nil {
+		return db, err
 	}
 
 	return db, nil
