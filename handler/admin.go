@@ -2,6 +2,7 @@ package handler
 
 import (
 	"book-store/admin"
+	"book-store/auth"
 	"book-store/helper"
 	"net/http"
 
@@ -10,10 +11,11 @@ import (
 
 type handlerAdmin struct {
 	adminService admin.IService
+	authService  auth.Service
 }
 
-func NewHandlerAdmin(adminService admin.IService) *handlerAdmin {
-	return &handlerAdmin{adminService}
+func NewHandlerAdmin(adminService admin.IService, authService auth.Service) *handlerAdmin {
+	return &handlerAdmin{adminService, authService}
 }
 
 func (h *handlerAdmin) Login(c *gin.Context) {
@@ -45,10 +47,26 @@ func (h *handlerAdmin) Login(c *gin.Context) {
 		return
 	}
 
+	// generate token jwt
+	token, err := h.authService.GenerateToken(adminLoggedin.ID)
+	if err != nil {
+		response := helper.ResponseAPI(
+			"failed generate token",
+			httpCode,
+			err.Error(),
+		)
+
+		c.JSON(httpCode, response)
+		return
+	}
+
+	// format admin
+	adminFormatted := admin.FormatterResponseAdmin(adminLoggedin, token)
+
 	response := helper.ResponseAPI(
 		"success",
 		httpCode,
-		adminLoggedin,
+		adminFormatted,
 	)
 
 	c.JSON(httpCode, response)
