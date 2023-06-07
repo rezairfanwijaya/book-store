@@ -2,6 +2,7 @@ package main
 
 import (
 	"book-store/admin"
+	"book-store/auth"
 	"book-store/database"
 	"book-store/handler"
 	"log"
@@ -16,10 +17,13 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
+	// auth
+	serviceAuth := auth.NewServiceAuth()
+
 	// admin
 	repoAdmin := admin.NewRepository(connection)
 	serviceAdmin := admin.NewService(repoAdmin)
-	handlerAdmin := handler.NewHandlerAdmin(serviceAdmin)
+	handlerAdmin := handler.NewHandlerAdmin(serviceAdmin, serviceAuth)
 
 	// http server
 	router := gin.Default()
