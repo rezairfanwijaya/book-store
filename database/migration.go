@@ -22,7 +22,7 @@ func AdminMigration(db *gorm.DB) error {
 		}
 
 		newAdmin := admin.Admin{
-			Email:    "admin@gmil.com",
+			Email:    "admin@gmail.com",
 			Password: passEncrypt,
 			Role:     "admin",
 		}
