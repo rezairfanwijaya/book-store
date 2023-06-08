@@ -60,3 +60,28 @@ func (h *handlerBook) Create(c *gin.Context) {
 
 	c.JSON(httpCode, response)
 }
+
+func (h *handlerBook) GetAll(c *gin.Context) {
+	books, httpCode, err := h.bookService.GetAll()
+	if err != nil {
+		response := helper.ResponseAPI(
+			"failed",
+			httpCode,
+			err.Error(),
+		)
+
+		c.JSON(httpCode, response)
+		return
+	}
+
+	// formatter
+	booksFormatted := book.FormatterResponseBooks(books)
+
+	response := helper.ResponseAPI(
+		"success",
+		httpCode,
+		booksFormatted,
+	)
+
+	c.JSON(httpCode, response)
+}
