@@ -29,7 +29,7 @@ func (r *repository) Save(book entity.Book) (entity.Book, error) {
 
 func (r *repository) FindByBookTitle(bookTitle string) (entity.Book, error) {
 	var book entity.Book
-	if err := r.db.Model(&book).Preload("authors").Find(&book).Error; err != nil {
+	if err := r.db.Model(&entity.Book{}).Preload("Authors").Where("title = ?", bookTitle).Find(&book).Error; err != nil {
 		return book, err
 	}
 
