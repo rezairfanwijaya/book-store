@@ -8,6 +8,7 @@ import (
 
 type IService interface {
 	Save(input InputNewBook) (entity.Book, int, error)
+	GetAll() ([]entity.Book, int, error)
 }
 
 type service struct {
@@ -33,6 +34,17 @@ func (s *service) Save(input InputNewBook) (entity.Book, int, error) {
 		}
 	}
 
+	if bookByTitle.ID != 0 {
+		// jika book sudah ada maka tambahkan saja authornya
+		bookByTitle.Authors = append(bookByTitle.Authors, input.Author)
+		bookUpdated, err := s.repoBook.Update(bookByTitle)
+		if err != nil {
+			return bookUpdated, http.StatusInternalServerError, err
+		}
+
+		return bookUpdated, http.StatusOK, err
+	}
+
 	// mapping
 	book := entity.Book{
 		Title:         input.Title,
@@ -50,4 +62,13 @@ func (s *service) Save(input InputNewBook) (entity.Book, int, error) {
 	}
 
 	return bookSaved, http.StatusOK, nil
+}
+
+func (s *service) GetAll() ([]entity.Book, int, error) {
+	books, err := s.repoBook.FindAll()
+	if err != nil {
+		return books, http.StatusInternalServerError, err
+	}
+
+	return books, http.StatusOK, err
 }
