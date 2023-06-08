@@ -127,3 +127,28 @@ func (h *handlerAuthor) CurrentAuthor(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response)
 }
+
+func (h *handlerAuthor) GetAllAuthors(c *gin.Context) {
+	authors, httpCode, err := h.authorService.GetAll()
+	if err != nil {
+		response := helper.ResponseAPI(
+			"failed",
+			httpCode,
+			err.Error(),
+		)
+
+		c.JSON(httpCode, response)
+		return
+	}
+
+	// formatting
+	authorsFormatted := author.FormatterCurrentAuthors(authors)
+
+	response := helper.ResponseAPI(
+		"success",
+		httpCode,
+		authorsFormatted,
+	)
+
+	c.JSON(httpCode, response)
+}
