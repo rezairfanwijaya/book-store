@@ -109,3 +109,14 @@ func (h *handlerAuthor) Login(c *gin.Context) {
 
 	c.JSON(httpCode, response)
 }
+
+func (h *handlerAuthor) CurrentAuthor(c *gin.Context) {
+	currentAuthor := c.MustGet("currentAuthor").(author.Author)
+	response := helper.ResponseAPI(
+		"success",
+		http.StatusOK,
+		currentAuthor,
+	)
+
+	c.JSON(http.StatusOK, response)
+}
