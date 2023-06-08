@@ -2,6 +2,7 @@ package database
 
 import (
 	"book-store/author"
+	"book-store/book"
 	"book-store/helper"
 	"fmt"
 
@@ -36,7 +37,10 @@ func NewConnection(envPath string) (*gorm.DB, error) {
 	}
 
 	// migrasi schema
-	if err := db.AutoMigrate(&author.Author{}); err != nil {
+	if err := db.AutoMigrate(
+		&author.Author{},
+		&book.Book{},
+	); err != nil {
 		return db, fmt.Errorf("error migaration schema : %v", err.Error())
 	}
 
