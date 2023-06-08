@@ -49,6 +49,7 @@ func main() {
 
 	// routing book
 	apiV1.POST("/book/create", authMiddleware(serviceAuth, serviceAuthor), handlerBook.Create)
+	apiV1.PUT("/book/update/:title", authMiddleware(serviceAuth, serviceAuthor), handlerBook.Update)
 	apiV1.GET("/books", handlerBook.GetAll)
 
 	// serve
