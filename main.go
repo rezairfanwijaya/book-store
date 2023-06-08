@@ -1,8 +1,8 @@
 package main
 
 import (
-	"book-store/admin"
 	"book-store/auth"
+	"book-store/author"
 	"book-store/database"
 	"book-store/handler"
 	"log"
@@ -20,10 +20,10 @@ func main() {
 	// auth
 	serviceAuth := auth.NewServiceAuth()
 
-	// admin
-	repoAdmin := admin.NewRepository(connection)
-	serviceAdmin := admin.NewService(repoAdmin)
-	handlerAdmin := handler.NewHandlerAdmin(serviceAdmin, serviceAuth)
+	// author
+	repoAuthor := author.NewRepository(connection)
+	serviceAuthor := author.NewService(repoAuthor)
+	handlerAuthor := handler.NewHandlerAuthor(serviceAuthor, serviceAuth)
 
 	// http server
 	router := gin.Default()
@@ -32,7 +32,8 @@ func main() {
 	apiV1 := router.Group("api/v1")
 
 	// routing admin
-	apiV1.POST("/admin/login", handlerAdmin.Login)
+	apiV1.POST("/author/register", handlerAuthor.Register)
+	apiV1.POST("/author/login", handlerAuthor.Login)
 
 	// serve
 	if err := router.Run(":5454"); err != nil {
