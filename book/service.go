@@ -9,6 +9,7 @@ import (
 type IService interface {
 	Save(input InputNewBook) (entity.Book, int, error)
 	GetAll() ([]entity.Book, int, error)
+	Update(input InputUpdateBook, title string) (entity.Book, int, error)
 }
 
 type service struct {
@@ -71,4 +72,41 @@ func (s *service) GetAll() ([]entity.Book, int, error) {
 	}
 
 	return books, http.StatusOK, err
+}
+
+func (s *service) Update(input InputUpdateBook, title string) (entity.Book, int, error) {
+	// cek apakah buku ada atau tidak
+	bookByTitle, err := s.repoBook.FindByBookTitle(title)
+	if err != nil {
+		return bookByTitle, http.StatusInternalServerError, err
+	}
+
+	if bookByTitle.ID == 0 {
+		return bookByTitle, http.StatusNotFound, fmt.Errorf("book %v not found", title)
+	}
+
+	// cek apakah user merupakan author buku atau bukan
+	isAuthor := false
+	for _, author := range bookByTitle.Authors {
+		if input.Author.ID == author.ID {
+			isAuthor = true
+		}
+	}
+
+	if !isAuthor {
+		return bookByTitle, http.StatusNotFound, fmt.Errorf("%v not author this book", input.Author.Name)
+	}
+
+	// binding
+	bookByTitle.ISBN = input.ISBN
+	bookByTitle.PublishedYear = input.PublishedYear
+	bookByTitle.Title = input.Title
+
+	// update
+	bookUpdated, err := s.repoBook.Update(bookByTitle)
+	if err != nil {
+		return bookUpdated, http.StatusInternalServerError, err
+	}
+
+	return bookUpdated, http.StatusOK, nil
 }
