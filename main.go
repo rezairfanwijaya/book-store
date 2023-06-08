@@ -49,6 +49,7 @@ func main() {
 
 	// routing book
 	apiV1.POST("/book/create", authMiddleware(serviceAuth, serviceAuthor), handlerBook.Create)
+	apiV1.GET("/books", handlerBook.GetAll)
 
 	// serve
 	if err := router.Run(":5454"); err != nil {
