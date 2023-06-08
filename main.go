@@ -44,6 +44,7 @@ func main() {
 	// routing author
 	apiV1.POST("/author/register", handlerAuthor.Register)
 	apiV1.POST("/author/login", handlerAuthor.Login)
+	apiV1.GET("/author/current", authMiddleware(serviceAuth, serviceAuthor), handlerAuthor.CurrentAuthor)
 
 	// routing book
 	apiV1.POST("/book/create", authMiddleware(serviceAuth, serviceAuthor), handlerBook.Create)
