@@ -10,6 +10,7 @@ type IRepository interface {
 	Save(author entity.Author) (entity.Author, error)
 	FindByName(name string) (entity.Author, error)
 	FindByID(id int) (entity.Author, error)
+	FindAll() ([]entity.Author, error)
 }
 
 type repository struct {
@@ -44,4 +45,13 @@ func (r *repository) FindByID(id int) (entity.Author, error) {
 	}
 
 	return author, nil
+}
+
+func (r *repository) FindAll() ([]entity.Author, error) {
+	var authors []entity.Author
+	if err := r.db.Find(&authors).Error; err != nil {
+		return authors, err
+	}
+
+	return authors, nil
 }

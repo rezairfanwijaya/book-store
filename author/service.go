@@ -11,6 +11,7 @@ type IService interface {
 	Login(input InputAuthorSession) (entity.Author, int, error)
 	GetByName(name string) (entity.Author, int, error)
 	GetByID(id int) (entity.Author, int, error)
+	GetAll() ([]entity.Author, int, error)
 }
 
 type service struct {
@@ -87,4 +88,13 @@ func (s *service) GetByID(id int) (entity.Author, int, error) {
 	}
 
 	return authorByID, http.StatusOK, nil
+}
+
+func (s *service) GetAll() ([]entity.Author, int, error) {
+	authors, err := s.repoAtuhor.FindAll()
+	if err != nil {
+		return authors, http.StatusInternalServerError, err
+	}
+
+	return authors, http.StatusOK, nil
 }

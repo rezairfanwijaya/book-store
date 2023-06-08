@@ -29,3 +29,14 @@ func FormatterCurrentAuthor(author entity.Author) *responseCurrentAuthor {
 		Country: author.Country,
 	}
 }
+
+func FormatterCurrentAuthors(authors []entity.Author) []*responseCurrentAuthor {
+	var result []*responseCurrentAuthor
+
+	for _, author := range authors {
+		singleAuthor := FormatterCurrentAuthor(author)
+		result = append(result, singleAuthor)
+	}
+
+	return result
+}
