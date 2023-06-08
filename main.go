@@ -3,6 +3,7 @@ package main
 import (
 	"book-store/auth"
 	"book-store/author"
+	"book-store/book"
 	"book-store/database"
 	"book-store/handler"
 	"book-store/helper"
@@ -29,15 +30,23 @@ func main() {
 	serviceAuthor := author.NewService(repoAuthor)
 	handlerAuthor := handler.NewHandlerAuthor(serviceAuthor, serviceAuth)
 
+	// book
+	repoBook := book.NewRepository(connection)
+	serviceBook := book.NewService(repoBook)
+	handlerBook := handler.NewHandlerBook(serviceBook)
+
 	// http server
 	router := gin.Default()
 
 	// api versioning
 	apiV1 := router.Group("api/v1")
 
-	// routing admin
+	// routing author
 	apiV1.POST("/author/register", handlerAuthor.Register)
 	apiV1.POST("/author/login", handlerAuthor.Login)
+
+	// routing book
+	apiV1.POST("/book/create", authMiddleware(serviceAuth, serviceAuthor), handlerBook.Create)
 
 	// serve
 	if err := router.Run(":5454"); err != nil {
@@ -95,6 +104,6 @@ func authMiddleware(authService auth.Service, authorService author.IService) gin
 		}
 
 		// set context
-		c.Set("currentUser", user)
+		c.Set("currentAuthor", user)
 	}
 }
