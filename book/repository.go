@@ -11,6 +11,7 @@ type IRepository interface {
 	FindByBookTitle(bookTitle string) (entity.Book, error)
 	FindAll() ([]entity.Book, error)
 	Update(book entity.Book) (entity.Book, error)
+	Delete(book entity.Book) error
 }
 
 type repository struct {
@@ -53,4 +54,18 @@ func (r *repository) Update(book entity.Book) (entity.Book, error) {
 	}
 
 	return book, nil
+}
+
+func (r *repository) Delete(book entity.Book) error {
+	var singleBook entity.Book
+
+	if err := r.db.Model(&book).Association("Authors").Clear(); err != nil {
+		return err
+	}
+
+	if err := r.db.Where("title = ?", book.Title).Delete(&singleBook).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -10,6 +10,7 @@ type IService interface {
 	Save(input InputNewBook) (entity.Book, int, error)
 	GetAll() ([]entity.Book, int, error)
 	Update(input InputUpdateBook, title string) (entity.Book, int, error)
+	Delete(bookTitle string, author entity.Author) (int, error)
 }
 
 type service struct {
@@ -109,4 +110,35 @@ func (s *service) Update(input InputUpdateBook, title string) (entity.Book, int,
 	}
 
 	return bookUpdated, http.StatusOK, nil
+}
+
+func (s *service) Delete(bookTitle string, author entity.Author) (int, error) {
+	// cari buku berdasarkan title
+	bookByTitle, err := s.repoBook.FindByBookTitle(bookTitle)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	if bookByTitle.ID == 0 {
+		return http.StatusNotFound, fmt.Errorf("book %v not found", bookTitle)
+	}
+
+	// apakah user merupakan author
+	isAuthor := false
+	for _, bookAuthor := range bookByTitle.Authors {
+		if author.ID == bookAuthor.ID {
+			isAuthor = true
+		}
+	}
+
+	if !isAuthor {
+		return http.StatusNotFound, fmt.Errorf("%v not author this book", author.Name)
+	}
+
+	// delete
+	if err := s.repoBook.Delete(bookByTitle); err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	return http.StatusOK, nil
 }

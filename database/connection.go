@@ -37,8 +37,8 @@ func NewConnection(envPath string) (*gorm.DB, error) {
 
 	// migrasi schema
 	if err := db.AutoMigrate(
-		&entity.Author{},
 		&entity.Book{},
+		&entity.Author{},
 	); err != nil {
 		return db, fmt.Errorf("error migaration schema : %v", err.Error())
 	}

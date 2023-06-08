@@ -141,3 +141,42 @@ func (h *handlerBook) Update(c *gin.Context) {
 
 	c.JSON(httpCode, response)
 }
+
+func (h *handlerBook) Delete(c *gin.Context) {
+	title := c.Param("title")
+
+	if title == "" {
+		response := helper.ResponseAPI(
+			"failed",
+			http.StatusBadRequest,
+			"param not be empty",
+		)
+
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	// ambil info author yang create new book
+	currentAuthor := c.MustGet("currentAuthor").(entity.Author)
+
+	// service
+	httpCode, err := h.bookService.Delete(title, currentAuthor)
+	if err != nil {
+		response := helper.ResponseAPI(
+			"failed",
+			httpCode,
+			err.Error(),
+		)
+
+		c.JSON(httpCode, response)
+		return
+	}
+
+	response := helper.ResponseAPI(
+		"success",
+		httpCode,
+		"success deleted",
+	)
+
+	c.JSON(httpCode, response)
+}

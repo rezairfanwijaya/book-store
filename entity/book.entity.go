@@ -5,5 +5,5 @@ type Book struct {
 	Title         string   `json:"title"`
 	PublishedYear string   `json:"pusblished_year"`
 	ISBN          string   `json:"isbn"`
-	Authors       []Author `gorm:"many2many:author_books;"`
+	Authors       []Author `gorm:"many2many:author_books;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
