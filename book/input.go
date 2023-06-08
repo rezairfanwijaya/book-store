@@ -1,10 +1,12 @@
 package book
 
-import "book-store/author"
+import (
+	"book-store/entity"
+)
 
 type InputNewBook struct {
 	Title         string        `json:"title"`
 	PublishedYear string        `json:"pusblished_year"`
 	ISBN          string        `json:"isbn"`
-	Author        author.Author `json:"author"`
+	Author        entity.Author `json:"author"`
 }

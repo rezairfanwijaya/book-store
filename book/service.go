@@ -1,12 +1,12 @@
 package book
 
 import (
-	"book-store/author"
+	"book-store/entity"
 	"net/http"
 )
 
 type IService interface {
-	Save(input InputNewBook) (Book, int, error)
+	Save(input InputNewBook) (entity.Book, int, error)
 }
 
 type service struct {
@@ -17,13 +17,13 @@ func NewService(repoBook IRepository) *service {
 	return &service{repoBook}
 }
 
-func (s *service) Save(input InputNewBook) (Book, int, error) {
-	// binding
-	book := Book{
+func (s *service) Save(input InputNewBook) (entity.Book, int, error) {
+	// mapping
+	book := entity.Book{
 		Title:         input.Title,
 		PublishedYear: input.PublishedYear,
 		ISBN:          input.ISBN,
-		Author: []author.Author{
+		Authors: []entity.Author{
 			input.Author,
 		},
 	}

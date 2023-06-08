@@ -1,9 +1,14 @@
 package book
 
-import "gorm.io/gorm"
+import (
+	"book-store/entity"
+
+	"gorm.io/gorm"
+)
 
 type IRepository interface {
-	Save(book Book) (Book, error)
+	Save(book entity.Book) (entity.Book, error)
+	FindByBookTitle(bookTitle string) (entity.Book, error)
 }
 
 type repository struct {
@@ -14,8 +19,17 @@ func NewRepository(db *gorm.DB) *repository {
 	return &repository{db}
 }
 
-func (r *repository) Save(book Book) (Book, error) {
+func (r *repository) Save(book entity.Book) (entity.Book, error) {
 	if err := r.db.Create(&book).Error; err != nil {
+		return book, err
+	}
+
+	return book, nil
+}
+
+func (r *repository) FindByBookTitle(bookTitle string) (entity.Book, error) {
+	var book entity.Book
+	if err := r.db.Model(&book).Preload("authors").Find(&book).Error; err != nil {
 		return book, err
 	}
 

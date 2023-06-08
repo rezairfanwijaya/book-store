@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"book-store/author"
 	"book-store/book"
+	"book-store/entity"
 	"book-store/helper"
 	"net/http"
 
@@ -19,7 +19,7 @@ func NewHandlerBook(bookService book.IService) *handlerBook {
 
 func (h *handlerBook) Create(c *gin.Context) {
 	// ambil infor author yang create new book
-	currentAuthor := c.MustGet("currentAuthor").(author.Author)
+	currentAuthor := c.MustGet("currentAuthor").(entity.Author)
 
 	// input binding
 	var input book.InputNewBook

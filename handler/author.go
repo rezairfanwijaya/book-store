@@ -3,6 +3,7 @@ package handler
 import (
 	"book-store/auth"
 	"book-store/author"
+	"book-store/entity"
 	"book-store/helper"
 	"net/http"
 
@@ -47,10 +48,13 @@ func (h *handlerAuthor) Register(c *gin.Context) {
 		return
 	}
 
+	// formatter
+	authorRegisteredFormatter := author.FormatterCurrentAuthor(authorRegistered)
+
 	response := helper.ResponseAPI(
 		"success",
 		httpCode,
-		authorRegistered,
+		authorRegisteredFormatter,
 	)
 
 	c.JSON(httpCode, response)
@@ -111,11 +115,14 @@ func (h *handlerAuthor) Login(c *gin.Context) {
 }
 
 func (h *handlerAuthor) CurrentAuthor(c *gin.Context) {
-	currentAuthor := c.MustGet("currentAuthor").(author.Author)
+	currentAuthor := c.MustGet("currentAuthor").(entity.Author)
+
+	// formatter
+	currentAuthorFormatter := author.FormatterCurrentAuthor(currentAuthor)
 	response := helper.ResponseAPI(
 		"success",
 		http.StatusOK,
-		currentAuthor,
+		currentAuthorFormatter,
 	)
 
 	c.JSON(http.StatusOK, response)

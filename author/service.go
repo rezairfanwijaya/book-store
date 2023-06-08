@@ -1,15 +1,16 @@
 package author
 
 import (
+	"book-store/entity"
 	"fmt"
 	"net/http"
 )
 
 type IService interface {
-	Register(input InputAuthorSession) (Author, int, error)
-	Login(input InputAuthorSession) (Author, int, error)
-	GetByName(name string) (Author, int, error)
-	GetByID(id int) (Author, int, error)
+	Register(input InputAuthorSession) (entity.Author, int, error)
+	Login(input InputAuthorSession) (entity.Author, int, error)
+	GetByName(name string) (entity.Author, int, error)
+	GetByID(id int) (entity.Author, int, error)
 }
 
 type service struct {
@@ -20,7 +21,7 @@ func NewService(repoAtuhor IRepository) *service {
 	return &service{repoAtuhor}
 }
 
-func (s *service) Register(input InputAuthorSession) (Author, int, error) {
+func (s *service) Register(input InputAuthorSession) (entity.Author, int, error) {
 	// get by name
 	authorByName, httpCode, err := s.GetByName(input.Name)
 	if err != nil {
@@ -28,7 +29,7 @@ func (s *service) Register(input InputAuthorSession) (Author, int, error) {
 	}
 
 	// binding
-	newAuthor := Author{
+	newAuthor := entity.Author{
 		Name:    input.Name,
 		Country: input.Country,
 	}
@@ -42,7 +43,7 @@ func (s *service) Register(input InputAuthorSession) (Author, int, error) {
 	return authorRegistered, http.StatusOK, nil
 }
 
-func (s *service) GetByName(name string) (Author, int, error) {
+func (s *service) GetByName(name string) (entity.Author, int, error) {
 	// find by name
 	authorByName, err := s.repoAtuhor.FindByName(name)
 	if err != nil {
@@ -56,7 +57,7 @@ func (s *service) GetByName(name string) (Author, int, error) {
 	return authorByName, http.StatusOK, nil
 }
 
-func (s *service) Login(input InputAuthorSession) (Author, int, error) {
+func (s *service) Login(input InputAuthorSession) (entity.Author, int, error) {
 	// get by name
 	authorByName, err := s.repoAtuhor.FindByName(input.Name)
 	if err != nil {
@@ -75,7 +76,7 @@ func (s *service) Login(input InputAuthorSession) (Author, int, error) {
 	return authorByName, http.StatusOK, nil
 }
 
-func (s *service) GetByID(id int) (Author, int, error) {
+func (s *service) GetByID(id int) (entity.Author, int, error) {
 	authorByID, err := s.repoAtuhor.FindByID(id)
 	if err != nil {
 		return authorByID, http.StatusInternalServerError, err

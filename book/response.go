@@ -1,21 +1,23 @@
 package book
 
-import "book-store/author"
+import (
+	"book-store/entity"
+)
 
 type responseNewBook struct {
 	ID            int             `json:"id"`
 	Title         string          `json:"title"`
 	PublishedYear string          `json:"pusblished_year"`
 	ISBN          string          `json:"isbn"`
-	Author        []author.Author `json:"author"`
+	Authors       []entity.Author `json:"authors"`
 }
 
-func FormatterResponseNewBook(book Book) *responseNewBook {
+func FormatterResponseNewBook(book entity.Book) *responseNewBook {
 	return &responseNewBook{
 		ID:            book.ID,
 		Title:         book.Title,
 		PublishedYear: book.PublishedYear,
 		ISBN:          book.ISBN,
-		Author:        book.Author,
+		Authors:       book.Authors,
 	}
 }
