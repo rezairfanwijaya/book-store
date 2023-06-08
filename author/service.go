@@ -9,6 +9,7 @@ type IService interface {
 	Register(input InputAuthorSession) (Author, int, error)
 	Login(input InputAuthorSession) (Author, int, error)
 	GetByName(name string) (Author, int, error)
+	GetByID(id int) (Author, int, error)
 }
 
 type service struct {
@@ -72,4 +73,17 @@ func (s *service) Login(input InputAuthorSession) (Author, int, error) {
 	}
 
 	return authorByName, http.StatusOK, nil
+}
+
+func (s *service) GetByID(id int) (Author, int, error) {
+	authorByID, err := s.repoAtuhor.FindByID(id)
+	if err != nil {
+		return authorByID, http.StatusInternalServerError, err
+	}
+
+	if authorByID.ID == 0 {
+		return authorByID, http.StatusBadRequest, fmt.Errorf("id %v not found", id)
+	}
+
+	return authorByID, http.StatusOK, nil
 }
