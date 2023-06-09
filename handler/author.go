@@ -152,3 +152,29 @@ func (h *handlerAuthor) GetAllAuthors(c *gin.Context) {
 
 	c.JSON(httpCode, response)
 }
+
+func (h *handlerAuthor) GetByName(c *gin.Context) {
+	authorName := c.Param("name")
+
+	authorByName, httpCode, err := h.authorService.GetByName(authorName)
+	if err != nil {
+		response := helper.ResponseAPI(
+			"failed",
+			httpCode,
+			err.Error(),
+		)
+
+		c.JSON(httpCode, response)
+		return
+	}
+
+	// formatter
+	authorByNameForamtted := author.FormatterAuthorByName(authorByName)
+	response := helper.ResponseAPI(
+		"success",
+		httpCode,
+		authorByNameForamtted,
+	)
+
+	c.JSON(httpCode, response)
+}
