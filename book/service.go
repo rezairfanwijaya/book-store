@@ -11,6 +11,7 @@ type IService interface {
 	GetAll() ([]entity.Book, int, error)
 	Update(input InputUpdateBook, title string) (entity.Book, int, error)
 	Delete(bookTitle string, author entity.Author) (int, error)
+	GetByBookTitle(bookTitle string) (entity.Book, int, error)
 }
 
 type service struct {
@@ -141,4 +142,17 @@ func (s *service) Delete(bookTitle string, author entity.Author) (int, error) {
 	}
 
 	return http.StatusOK, nil
+}
+
+func (s *service) GetByBookTitle(bookTitle string) (entity.Book, int, error) {
+	bookByTitle, err := s.repoBook.FindByBookTitle(bookTitle)
+	if err != nil {
+		return bookByTitle, http.StatusInternalServerError, err
+	}
+
+	if bookByTitle.ID == 0 {
+		return bookByTitle, http.StatusNotFound, fmt.Errorf("book %v not found", bookTitle)
+	}
+
+	return bookByTitle, http.StatusOK, nil
 }
