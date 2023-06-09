@@ -31,7 +31,7 @@ func (r *repository) Save(author entity.Author) (entity.Author, error) {
 
 func (r *repository) FindByName(name string) (entity.Author, error) {
 	var author entity.Author
-	if err := r.db.Where("name = ?", name).Find(&author).Error; err != nil {
+	if err := r.db.Model(&entity.Author{}).Preload("Books").Where("name = ?", name).Find(&author).Error; err != nil {
 		return author, err
 	}
 
