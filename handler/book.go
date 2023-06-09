@@ -180,3 +180,29 @@ func (h *handlerBook) Delete(c *gin.Context) {
 
 	c.JSON(httpCode, response)
 }
+
+func (h *handlerBook) GetByTitle(c *gin.Context) {
+	bookTitle := c.Param("title")
+
+	bookByTitle, httpCode, err := h.bookService.GetByBookTitle(bookTitle)
+	if err != nil {
+		response := helper.ResponseAPI(
+			"failed",
+			httpCode,
+			err.Error(),
+		)
+
+		c.JSON(httpCode, response)
+		return
+	}
+
+	// formatter
+	bookByTitleFormatted := book.FormatterResponseBook(bookByTitle)
+	response := helper.ResponseAPI(
+		"success",
+		httpCode,
+		bookByTitleFormatted,
+	)
+
+	c.JSON(httpCode, response)
+}
