@@ -42,15 +42,17 @@ func main() {
 	apiV1 := router.Group("api/v1")
 
 	// routing author
-	apiV1.GET("/author/all", handlerAuthor.GetAllAuthors)
+	apiV1.GET("/authors", handlerAuthor.GetAllAuthors)
 	apiV1.POST("/author/register", handlerAuthor.Register)
 	apiV1.POST("/author/login", handlerAuthor.Login)
 	apiV1.GET("/author/current", authMiddleware(serviceAuth, serviceAuthor), handlerAuthor.CurrentAuthor)
+	apiV1.GET("/author/:name", handlerAuthor.GetByName)
 
 	// routing book
 	apiV1.POST("/book/create", authMiddleware(serviceAuth, serviceAuthor), handlerBook.Create)
 	apiV1.PUT("/book/update/:title", authMiddleware(serviceAuth, serviceAuthor), handlerBook.Update)
 	apiV1.DELETE("/book/delete/:title", authMiddleware(serviceAuth, serviceAuthor), handlerBook.Delete)
+	apiV1.GET("/book/:title", handlerBook.GetByTitle)
 	apiV1.GET("/books", handlerBook.GetAll)
 
 	// serve
