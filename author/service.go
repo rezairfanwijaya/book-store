@@ -23,10 +23,14 @@ func NewService(repoAtuhor IRepository) *service {
 }
 
 func (s *service) Register(input InputAuthorSession) (entity.Author, int, error) {
-	// get by name
-	authorByName, httpCode, err := s.GetByName(input.Name)
+	// find by name
+	authorByName, err := s.repoAtuhor.FindByName(input.Name)
 	if err != nil {
-		return authorByName, httpCode, err
+		return authorByName, http.StatusInternalServerError, err
+	}
+
+	if authorByName.ID != 0 {
+		return authorByName, http.StatusBadRequest, fmt.Errorf("author %v already registered", input.Name)
 	}
 
 	// binding
@@ -51,8 +55,8 @@ func (s *service) GetByName(name string) (entity.Author, int, error) {
 		return authorByName, http.StatusInternalServerError, err
 	}
 
-	if authorByName.ID != 0 {
-		return authorByName, http.StatusBadRequest, fmt.Errorf("author %v already registered", name)
+	if authorByName.ID == 0 {
+		return authorByName, http.StatusBadRequest, fmt.Errorf("author %v not found", name)
 	}
 
 	return authorByName, http.StatusOK, nil
