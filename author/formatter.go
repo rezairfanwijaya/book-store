@@ -14,6 +14,13 @@ type responseCurrentAuthor struct {
 	Country string `json:"country"`
 }
 
+type responseAuthorByName struct {
+	ID      int           `json:"id"`
+	Name    string        `json:"name"`
+	Country string        `json:"country"`
+	Books   []entity.Book `json:"books"`
+}
+
 func FormatterAuthorLogin(author entity.Author, token string) *responseAuthorLogin {
 	return &responseAuthorLogin{
 		Name:    author.Name,
@@ -39,4 +46,13 @@ func FormatterCurrentAuthors(authors []entity.Author) []*responseCurrentAuthor {
 	}
 
 	return result
+}
+
+func FormatterAuthorByName(author entity.Author) *responseAuthorByName {
+	return &responseAuthorByName{
+		ID:      author.ID,
+		Name:    author.Name,
+		Country: author.Country,
+		Books:   author.Books,
+	}
 }
